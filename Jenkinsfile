@@ -4,25 +4,20 @@ node {
             pollSCM('H/2 * * * *')
         ])
     ])
-    agent {
-        docker {
-            image 'node:16-buster-slim' 
-            args '-p 3000:3000' 
-        }
-    }
-    stage('Checkout') {
-        steps {
+    
+    docker.image('node:16-buster-slim').inside('-p 3000:3000') {
+        
+        stage('Checkout') {
+            echo 'Checking out the code...'
             checkout scm
         }
-    }
-    stage('Build') {
-        steps {
+        
+        stage('Build') {
             echo 'Building the project...'
             sh 'npm install'
         }
-    }
-    stage('Test') {
-        steps {
+        
+        stage('Test') {
             echo 'Running tests...'
             sh './jenkins/scripts/test.sh'
         }
