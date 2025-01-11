@@ -10,23 +10,21 @@ node {
             args '-p 3000:3000' 
         }
     }
-    stages{
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
+    stage('Checkout') {
+        steps {
+            checkout scm
         }
-        stage('Build') {
-            steps {
-                echo 'Building the project...'
-                sh 'npm install'
-            }
+    }
+    stage('Build') {
+        steps {
+            echo 'Building the project...'
+            sh 'npm install'
         }
-        stage('Test') {
-            steps {
-                echo 'Running tests...'
-                sh './jenkins/scripts/test.sh'
-            }
+    }
+    stage('Test') {
+        steps {
+            echo 'Running tests...'
+            sh './jenkins/scripts/test.sh'
         }
     }
 }
