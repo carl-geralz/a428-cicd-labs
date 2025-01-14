@@ -98,7 +98,7 @@ scrape_configs:
     metrics_path: /prom
     static_configs:
       - targets: [\"jenkins-blueocean:8080\"]
-" > ./prom/prometheus.yml
+" > ./prometheus/prometheus.yml
 docker run --name prometheus-jenkins \
     --rm \
     --detach \
