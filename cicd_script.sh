@@ -51,10 +51,11 @@ docker run \
   --volume jenkins-data:/var/jenkins_home \
   --volume jenkins-docker-certs:/certs/client:ro \
   myjenkins-blueocean:2.426.2-1
+echo "Waiting for jenkins-blueocean to initialize..."
+sleep 120
 echo "Creating and appending NGINX configuration..."
 rm ./nginx.conf
-echo "
-worker_processes auto;
+echo "worker_processes auto;
 
 events {
     worker_connections 1024;
@@ -82,16 +83,13 @@ docker run --name nginx-reverse-proxy \
   --publish 9000:9000 \
   --volume $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro \
   nginx
-
 echo "NGINX reverse proxy is running on http://localhost:9000"
 echo "Creating and appending Prometheus configuration..."
 rm -rf ./prom
 mkdir ./prom
-echo "
-global:
+echo "global:
   scrape_interval: 10s
   evaluation_interval: 10s
-
 scrape_configs:
   - job_name: \"prometheus\"
     static_configs:
@@ -105,13 +103,12 @@ docker run --name prometheus-jenkins \
     --rm \
     --detach \
     --network jenkins \
-    --publish 9090:9090 \
+    --publish 9091:9090 \
     --volume $(pwd)/prometheus:/etc/prometheus \
     prom/prometheus
-    
 echo "Waiting for prometheus-jenkins to initialize..."
 sleep 5
-echo "Prometheus is running on http://localhost:9090"
+echo "Prometheus is running on http://localhost:9091"
 docker volume inspect grafana-storage >/dev/null 2>&1 || \
 docker volume create grafana-storage
 docker volume inspect grafana-storage
@@ -120,11 +117,11 @@ mkdir ./grafana
 docker run --name grafana-prom \
     --rm \
     --detach \
-    --publish 3030:3030 \
+    --publish 3031:3030 \
     --network jenkins \
     --env "GF_SERVER_HTTP_PORT=3030" \
     grafana/grafana-enterprise
 echo "Waiting for grafana to initialize..."
 sleep 5
-echo "Grafana is running on http://localhost:3030"
+echo "Grafana is running on http://localhost:3031"
 # pull prometheus from http://prometheus-jenkins:9090 to grafana
