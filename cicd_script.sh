@@ -85,8 +85,8 @@ docker run --name nginx-reverse-proxy \
   nginx
 echo "NGINX reverse proxy is running on http://localhost:9000"
 echo "Creating and appending Prometheus configuration..."
-rm -rf ./prom
-mkdir ./prom
+rm -rf ./prometheus
+mkdir ./prometheus
 echo "global:
   scrape_interval: 10s
   evaluation_interval: 10s
